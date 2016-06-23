@@ -1,0 +1,26 @@
+<tr data-id="<%= run._id %>-body">
+    <td colspan="6" class="hiddenRow">
+        <div class="accordion-body collapse" id="<%= run._id %>">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                <% run.results.forEach(function(result){
+                if (result.state != 0){ %>
+                <tr class="state-<%= result.state %>">
+                    <td><a class="black-icon" title="Add to blacklist"
+                           href="/tests/blacklist?test=<%= test._id %>&blacklist=<%= encodeURI(result.test) %>"><i
+                                    class="fa fa-plus-square"></i></a>
+                        <a class="grey-icon" title="Add to greylist"
+                           href="/tests/greylist?test=<%= test._id %>&greylist=<%= encodeURI(result.test) %>"><i
+                                    class="fa fa-plus-square"></i></a>
+                    </td>
+                    <td><%= result.test %></td>
+                    <td><%= result.state %></td>
+                    <td><%= htmlescape(result.result) %></td>
+                </tr>
+                <% }}); %>
+                </tbody>
+            </table>
+
+        </div>
+    </td>
+</tr>

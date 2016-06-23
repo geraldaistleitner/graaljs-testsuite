@@ -1,0 +1,21 @@
+<tr data-id="<%= run._id %>-header" data-toggle="collapse" data-target="#<%= run._id %>"
+    class="accordion-toggle <% if(run.allTests > 0 && run.passedTests >= (run.allTests-test.blacklist.length)){ %>success<% } %>">
+    <td>
+        <% if(run.allTests > parseInt(run.passedTests) + parseInt(run.failedTests)){ %>
+        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+        <% } %>
+    </td>
+    <td><%= run.date %></td>
+    <td><%= run.allTests %></td>
+    <td><%= run.passedTests %></td>
+    <% if(run.allTests > parseInt(run.passedTests) + parseInt(run.failedTests) || run.allTests == 0){ %>
+    <script type="text/javascript">
+        if (a<%= run._id %> == null)
+            var a<%= run._id %> = true;
+        if (a<%= run._id %>) {
+            reloadRun("<%= run._id %>");
+        }
+        a<%= run._id %> = false;
+    </script>
+    <% } %>
+</tr>

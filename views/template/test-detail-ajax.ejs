@@ -1,0 +1,178 @@
+<script type="text/javascript">
+    function reloadRun(rid) {
+        $.post("/tests/run/state"
+                , {id: '<%= test._id %>', rid: rid}
+                , function (result) {
+                    $('tr[data-id="' + rid + '-header"]').replaceWith($(result.header));
+                    $('tr[data-id="' + rid + '-body"]').replaceWith($(result.body));
+                    if (!result.finished) {
+                        setTimeout(function () {
+                            reloadRun(rid)
+                        }, 2500);
+                    }
+                });
+    }
+</script>
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">GraalJS Test Runner</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <h3>Test suite <%= test.name %></h3>
+                <% if (test.initialized){ %>
+                    <p>Repository test, click <a href="/tests/initialize?test=<%= test._id %>">here</a> to update!</p>
+                <% } else { %>
+                <p style="color:red;">Repository not yet loaded, click <a href="/tests/initialize?test=<%= test._id %>">here</a> to
+                    initialize!</p>
+                <% } %>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>
+                                Date of run
+                            </th>
+                            <th>
+                                Number of tests run
+                            </th>
+                            <th>
+                                Passed tests
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="tb">
+                        <% test.runs.forEach(function(run){ %>
+                        <%- include test-detail-run-ajax %>
+                        <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <a href="#" id="runtest" class="btn btn-lg btn-success btn-block">Run test suite</a>
+    </div>
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Blacklist
+                <p>Tests will count successful even if the fail</p>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>
+                            Blacklisted test
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="tb">
+                    <% test.blacklist.forEach(function(black){ %>
+                    <tr>
+                        <td><a class="black-icon" title="Add to blacklist"
+                               href="/tests/unblacklist?test=<%= test._id %>&blacklist=<%= encodeURI(black.test) %>"><i
+                                        class="fa fa-minus-square"></i></a></td>
+                        </td>
+                        <td>
+                            <%= black.test %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Greylist
+                <p>Tests will not get executed at all</p>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>
+                            Greylisted test
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="tb">
+                    <% test.greylist.forEach(function(grey){ %>
+                    <tr>
+                        <td><a class="grey-icon" title="Add to greylist"
+                               href="/tests/ungreylist?test=<%= test._id %>&greylist=<%= encodeURI(grey.test) %>"><i
+                                        class="fa fa-minus-square"></i></a></td>
+                        </td>
+                        <td>
+                            <%= grey.test %>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+
+<!-- /#page-wrapper -->
+
+<!-- /#page-wrapper -->
+
+<script>
+    $(document).ready(function () {
+        $('#runtest').click(function () {
+            $.post("/tests/run"
+                    , {id: '<%= test._id %>'}
+                    , function (result) {
+                        $('#page-wrapper').html(result);
+                    });
+        })
+    });
+
+    function delTest(id) {
+        $.post("/tests/delete"
+                , {id: id}
+                , function (result) {
+                    //   getList();
+                })
+    }
+    function vote(id) {
+        $.post("/bbs/update"
+                , {id: id}
+                , function (result) {
+                    //  getList();
+                })
+    }
+
+</script>

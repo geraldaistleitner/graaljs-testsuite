@@ -1,0 +1,44 @@
+
+.table-striped>tbody>tr:nth-of-type(odd).state-1 {
+  background-color: #eeaaaa;
+}
+tr.state-1 {
+  background-color: #ddaaaa;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd).state-2,
+tr.state-2 {
+  background-color: #dddd00;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd).state-3,
+tr.state-3 {
+  background-color: #000;
+  color: #fff;
+}
+
+a.black-icon i {
+  color: #000;
+}
+
+.accordion-toggle {
+  cursor: pointer;
+}
+
+tr.accordion-toggle.success {
+  background: #44aa44;
+}
+
+a.grey-icon i {
+  color: #999;
+}
+
+.glyphicon-refresh-animate {
+  -animation: spin .7s infinite linear;
+  -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+  from { -webkit-transform: rotate(0deg);}
+  to { -webkit-transform: rotate(360deg);}
+}

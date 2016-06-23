@@ -1,0 +1,155 @@
+<% layout('../layout') %>
+<div id="page-wrapper">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">GraalJS Test Runner</h1>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Test suites</h3>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    URL
+                                </th>
+                                <th>
+                                    Directory
+                                </th>
+                                <th>
+                                    Key
+                                </th>
+                                <th>
+                                    Run Active
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="tb">
+                            <% tests.forEach(function(test){ %>
+                            <tr>
+                                <td></td>
+                                <td><%= test.name %></td>
+                                <td><%= test.svnUrl %></td>
+                                <td><%= test.basePath %></td>
+                                <td><%= test.key %></td>
+                                <td><%= test.runActive %></td>
+                            </tr>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Create new test suite
+                </div>
+                <div class="panel-body">
+                    <form role="form">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input id="name" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Directory</label>
+                                    <input id="basePath" class="form-control">
+                                    <p class="help-block">Directory of tests in SVN repository</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>SVN Repository</label>
+                                    <input id="svnUrl" class="form-control">
+                                    <p class="help-block">SVN URL</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Key</label>
+                                    <input id="key" class="form-control">
+                                    <p class="help-block">Key for API access</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <a href="#" id="savetest" class="btn btn-lg btn-success btn-block">Save</a>
+                            </div>
+                        </div>
+                        <!-- /.row (nested) -->
+                    </form>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+
+
+</div>
+<!-- /#page-wrapper -->
+
+<script>
+    $(document).ready(function () {
+        $('#savetest').click(function () {
+            $.post("/tests/create"
+                    , {name: $('#name').val(),basePath: $('#basePath').val(),key: $('#key').val(), svnUrl: $('#svnUrl').val()}
+                    , function (result) {
+                        getList();
+                    })
+        })
+        getList();
+    })
+
+
+    function getList() {
+        $.get("/tests/list"
+                , {}
+                , function (result) {
+                    var tb = $('#tb');
+                    tb.html("");
+                    $.each(result, function (a, b) {
+                        var html = "<tr><td><button type='button' class='btn btn-danger btn-circle' onclick='delTest(\"" + b._id + "\")'><i class='fa fa-times'></i></button></td><td>" + b.name + "&nbsp;&nbsp;<a class='btn btn-warning btn-circle' href='/tests/detail?id="+b._id + "')'><i class='fa fa-pencil'></i></a></td><td>"+b.svnUrl+"</td><td>" + b.basePath + "</td><td>" + b.key + "</td><td>" + b.runActive + "</td></tr>";
+                        tb.append(html);
+                    })
+                })
+    }
+
+    function delTest(id) {
+        $.post("/tests/delete"
+                , {id: id}
+                , function (result) {
+                    getList();
+                })
+    }
+    function detail(id) {
+        $.post("/tests/detail"
+                , {id: id}
+                , function (result) {
+                    getList();
+                })
+    }
+</script>
